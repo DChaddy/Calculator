@@ -1,60 +1,86 @@
 package com.chad.calculator;
 
-import android.content.res.Resources;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
+import android.media.MediaPlayer;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Button;
 import android.os.Handler;
 import android.view.View;
-
+import android.support.v7.widget.Toolbar;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 
 import static com.chad.calculator.Constants.*;
 
 public class MainActivity extends AppCompatActivity {
 
-    TextView calcInputView;// = (TextView)findViewById(R.id.text_view_id);
+    TextView calcInputView;
+    TextView toolBarText;
 
     Button[] buttons = new Button[18];
+    CharSequence[] originalButtonText = new CharSequence[buttons.length];
 
     Handler mHandler = new Handler();
     String calcInput = "";
+    Boolean needsClear;
+    MediaPlayer snoopPlayer;
+    String mode = "";
+    Toolbar action;
 
+    LinearLayout topLayout;
+    Drawable originalBackground;
+
+    float buttonRotation = 0;
+    boolean increasing = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main);
 
-        calcInputView = (TextView)findViewById(R.id.textView);
+        topLayout = findViewById(R.id.topLayout);
+        originalBackground = topLayout.getBackground();
 
-        buttons[kZeroButtonID] = (Button)findViewById(R.id.number0);
-        buttons[kOneButtonID] = (Button)findViewById(R.id.number1);
-        buttons[kTwoButtonID] = (Button)findViewById(R.id.number2);
-        buttons[kThreeButtonID] = (Button)findViewById(R.id.number3);
-        buttons[kFourButtonID] = (Button)findViewById(R.id.number4);
-        buttons[kFiveButtonID] = (Button)findViewById(R.id.number5);
-        buttons[kSixButtonID] = (Button)findViewById(R.id.number6);
-        buttons[kSevenButtonID] = (Button)findViewById(R.id.number7);
-        buttons[kEightButtonID] = (Button)findViewById(R.id.number8);
-        buttons[kNineButtonID] = (Button)findViewById(R.id.number9);
-        buttons[kDecimalButtonID] = (Button)findViewById(R.id.decimal);
-        buttons[kEqualsButtonID] = (Button)findViewById(R.id.equals);
-        buttons[kClearButtonID] = (Button)findViewById(R.id.clear);
-        buttons[kAddButtonID] = (Button)findViewById(R.id.add);
-        buttons[kSubtractButtonID] = (Button)findViewById(R.id.subtract);
-        buttons[kMultiplyButtonID] = (Button)findViewById(R.id.multiply);
-        buttons[kDivideButtonID] = (Button)findViewById(R.id.divide);
-        buttons[kBackButtonID] = (Button)findViewById(R.id.back);
+        snoopPlayer = MediaPlayer.create(getApplicationContext(), R.raw.snoop);
 
+        action = findViewById(R.id.toolbar);
+
+        calcInputView = findViewById(R.id.textView);
+        toolBarText = findViewById(R.id.toolbarText);
+
+        buttons[kZeroButtonID] = findViewById(R.id.number0);
+        buttons[kOneButtonID] = findViewById(R.id.number1);
+        buttons[kTwoButtonID] = findViewById(R.id.number2);
+        buttons[kThreeButtonID] = findViewById(R.id.number3);
+        buttons[kFourButtonID] = findViewById(R.id.number4);
+        buttons[kFiveButtonID] = findViewById(R.id.number5);
+        buttons[kSixButtonID] = findViewById(R.id.number6);
+        buttons[kSevenButtonID] = findViewById(R.id.number7);
+        buttons[kEightButtonID] = findViewById(R.id.number8);
+        buttons[kNineButtonID] = findViewById(R.id.number9);
+        buttons[kDecimalButtonID] = findViewById(R.id.decimal);
+        buttons[kEqualsButtonID] = findViewById(R.id.equals);
+        buttons[kClearButtonID] = findViewById(R.id.clear);
+        buttons[kAddButtonID] = findViewById(R.id.add);
+        buttons[kSubtractButtonID] = findViewById(R.id.subtract);
+        buttons[kMultiplyButtonID] = findViewById(R.id.multiply);
+        buttons[kDivideButtonID] = findViewById(R.id.divide);
+        buttons[kBackButtonID] = findViewById(R.id.back);
+
+        for(int i = 0; i < originalButtonText.length; i++)
+        {
+            originalButtonText[i] = buttons[i].getText();
+        }
 
         new Thread(new Runnable() {
             @Override
             public void run() {
-                // TODO Auto-generated method stub
-
                 while (true) {
                     try {
                         Thread.sleep(100);
@@ -63,10 +89,114 @@ public class MainActivity extends AppCompatActivity {
                             @Override
                             public void run() {
                                 calcInputView.setText(calcInput);
+                                needsClear = calcInput.equals("ERROR") || calcInput.equals("Figure it out yourself");
                             }
                         });
                     } catch (Exception e) {
-                        // TODO: handle exception
+
+                    }
+                }
+            }
+        }).start();
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while (true) {
+                    try {
+                        Thread.sleep(200);
+                        mHandler.post(new Runnable() {
+
+                            @Override
+                            public void run() {
+                                if(calcInput.equals("420") && !mode.equals("Snoop"))
+                                {
+                                    snoopMode();
+                                }
+                                else if(calcInput.equals("666") && !mode.equals("Devil"))
+                                {
+                                    devilMode();
+                                }
+                                else if(calcInput.equals("5138008") && !mode.equals("Boobies"))
+                                {
+                                    boobies();
+                                }
+                                else if(calcInput.equals("69") && !mode.equals("Sexy"))
+                                {
+                                    sexy();
+                                }
+                            }
+                        });
+                    } catch (Exception e) {
+
+                    }
+                }
+            }
+        }).start();
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while (true) {
+                    try {
+                        Thread.sleep(100);
+                        mHandler.post(new Runnable() {
+
+                            @Override
+                            public void run() {
+                                for(int i = 0; i < buttons.length; i++)
+                                {
+                                    buttons[i].setRotation(buttonRotation);
+                                }
+                            }
+                        });
+                    } catch (Exception e) {
+
+                    }
+                }
+            }
+        }).start();
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while (true) {
+                    try {
+                        Thread.sleep(100);
+                        mHandler.post(new Runnable() {
+
+                            @Override
+                            public void run() {
+                                if(mode.equals("Snoop"))
+                                {
+                                    if(increasing)
+                                    {
+                                        if(buttonRotation < 5)
+                                        {
+                                            buttonRotation += 0.2;
+                                        }
+                                        else
+                                        {
+                                            increasing = false;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        if(buttonRotation > -5)
+                                        {
+                                            buttonRotation -= 0.2;
+                                        }
+                                        else
+                                        {
+                                            increasing = true;
+                                        }
+                                    }
+
+                                }
+                            }
+                        });
+                    } catch (Exception e) {
+
                     }
                 }
             }
@@ -74,7 +204,7 @@ public class MainActivity extends AppCompatActivity {
 
         buttons[kZeroButtonID].setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                if(!calcInput.equals("ERROR"))
+                if(!needsClear)
                 {
                     calcInput += "0";
                 }
@@ -84,7 +214,7 @@ public class MainActivity extends AppCompatActivity {
 
         buttons[kOneButtonID].setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                if(!calcInput.equals("ERROR"))
+                if(!needsClear)
                 {
                     calcInput += "1";
                 }
@@ -93,7 +223,7 @@ public class MainActivity extends AppCompatActivity {
 
         buttons[kTwoButtonID].setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                if(!calcInput.equals("ERROR"))
+                if(!needsClear)
                 {
                     calcInput += "2";
                 }
@@ -102,7 +232,7 @@ public class MainActivity extends AppCompatActivity {
 
         buttons[kThreeButtonID].setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                if(!calcInput.equals("ERROR"))
+                if(!needsClear)
                 {
                     calcInput += "3";
                 }
@@ -111,7 +241,7 @@ public class MainActivity extends AppCompatActivity {
 
         buttons[kFourButtonID].setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                if(!calcInput.equals("ERROR"))
+                if(!needsClear)
                 {
                     calcInput += "4";
                 }
@@ -120,7 +250,7 @@ public class MainActivity extends AppCompatActivity {
 
         buttons[kFiveButtonID].setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                if(!calcInput.equals("ERROR"))
+                if(!needsClear)
                 {
                     calcInput += "5";
                 }
@@ -129,7 +259,7 @@ public class MainActivity extends AppCompatActivity {
 
         buttons[kSixButtonID].setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                if(!calcInput.equals("ERROR"))
+                if(!needsClear)
                 {
                     calcInput += "6";
                 }
@@ -138,7 +268,7 @@ public class MainActivity extends AppCompatActivity {
 
         buttons[kSevenButtonID].setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                if(!calcInput.equals("ERROR"))
+                if(!needsClear)
                 {
                     calcInput += "7";
                 }
@@ -147,7 +277,7 @@ public class MainActivity extends AppCompatActivity {
 
         buttons[kEightButtonID].setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                if(!calcInput.equals("ERROR"))
+                if(!needsClear)
                 {
                     calcInput += "8";
                 }
@@ -156,7 +286,7 @@ public class MainActivity extends AppCompatActivity {
 
         buttons[kNineButtonID].setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                if(!calcInput.equals("ERROR"))
+                if(!needsClear)
                 {
                     calcInput += "9";
                 }
@@ -165,7 +295,7 @@ public class MainActivity extends AppCompatActivity {
 
         buttons[kDecimalButtonID].setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                if(!calcInput.equals("ERROR"))
+                if(!needsClear)
                 {
                     calcInput += ".";
                 }
@@ -174,9 +304,17 @@ public class MainActivity extends AppCompatActivity {
 
         buttons[kEqualsButtonID].setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                if(!calcInput.equals("ERROR"))
+                if(!needsClear)
                 {
-                    calculate();
+                    if((int)(Math.random() * 10) < 2)
+                    {
+                        calcInput = "Figure it out yourself";
+                    }
+                    else
+                    {
+                        calculate();
+                    }
+
                 }
             }
         });
@@ -189,7 +327,7 @@ public class MainActivity extends AppCompatActivity {
 
         buttons[kAddButtonID].setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                if(!calcInput.equals("ERROR"))
+                if(!needsClear)
                 {
                     calcInput += "+";
                 }
@@ -198,7 +336,7 @@ public class MainActivity extends AppCompatActivity {
 
         buttons[kSubtractButtonID].setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                if(!calcInput.equals("ERROR"))
+                if(!needsClear)
                 {
                     calcInput += "-";
                 }
@@ -207,7 +345,7 @@ public class MainActivity extends AppCompatActivity {
 
         buttons[kMultiplyButtonID].setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                if(!calcInput.equals("ERROR"))
+                if(!needsClear)
                 {
                     calcInput += "*";
                 }
@@ -216,7 +354,7 @@ public class MainActivity extends AppCompatActivity {
 
         buttons[kDivideButtonID].setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                if(!calcInput.equals("ERROR"))
+                if(!needsClear)
                 {
                     calcInput += "/";
                 }
@@ -225,7 +363,7 @@ public class MainActivity extends AppCompatActivity {
 
         buttons[kBackButtonID].setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                if(!calcInput.equals("ERROR") && calcInput.length() > 0)
+                if(!needsClear && calcInput.length() > 0)
                 {
                     calcInput = calcInput.substring(0, calcInput.length() - 1);
                 }
@@ -238,7 +376,7 @@ public class MainActivity extends AppCompatActivity {
     void calculate()
     {
         ArrayList<String> operations = new ArrayList<>();
-        int numOfOp = 0;
+        calcInput = calcInput.replaceAll(",", "");
         String temp = "";
         for(int i = 0; i < calcInput.length(); i++)
         {
@@ -252,37 +390,22 @@ public class MainActivity extends AppCompatActivity {
             else
             {
 
-                if(calcInput.charAt(i) == '-')
-                {
-                    operations.add(temp);
+                if (calcInput.charAt(i) == '-') {
+                    if(!temp.equals(""))
+                    {
+                        operations.add(temp);
+                    }
+                    else
+                    {
+                        operations.add("0");
+                    }
+
                     operations.add("+");
                     temp = "";
-                }
-                else if(calcInput.charAt(i) != '.')
-                {
-                    numOfOp = 0;
                 }
 
                 temp += calcInput.charAt(i);
 
-
-
-            }
-
-            if(calcInput.charAt(i) == '+'
-            || calcInput.charAt(i) == '*'
-            || calcInput.charAt(i) == '/'
-            || calcInput.charAt(i) == '.'
-            || calcInput.charAt(i) == '-')
-            {
-                numOfOp++;
-            }
-
-            if(numOfOp > 1)
-            {
-                operations.clear();
-                calcInput = "ERROR";
-                break;
             }
 
             if(i == calcInput.length() - 1)
@@ -294,51 +417,151 @@ public class MainActivity extends AppCompatActivity {
 
         }
 
-        while(operations.size() > 1)
+        try
         {
-            if(operations.get(1).equals("+"))
+            while(operations.size() > 1)
             {
-                operations.set(0, "" + (Double.parseDouble(operations.get(0)) + Double.parseDouble(operations.get(2))));
-                operations.remove(1);
-                operations.remove(1);
-            }
-            else if(operations.get(1).equals("*"))
-            {
-                operations.set(0, "" + (Double.parseDouble(operations.get(0)) * Double.parseDouble(operations.get(2))));
-                operations.remove(1);
-                operations.remove(1);
-            }
-            else if(operations.get(1).equals("/"))
-            {
-                if(!operations.get(2).equals("0"))
+                if(operations.get(1).equals("+"))
+                {
+                    operations.set(0, "" + (Double.parseDouble(operations.get(0)) + Double.parseDouble(operations.get(2))));
+                    operations.remove(1);
+                    operations.remove(1);
+                }
+                else if(operations.get(1).equals("*"))
+                {
+                    operations.set(0, "" + (Double.parseDouble(operations.get(0)) * Double.parseDouble(operations.get(2))));
+                    operations.remove(1);
+                    operations.remove(1);
+                }
+                else if(operations.get(1).equals("/"))
                 {
                     operations.set(0, "" + (Double.parseDouble(operations.get(0)) / Double.parseDouble(operations.get(2))));
                     operations.remove(1);
                     operations.remove(1);
                 }
-                else
-                {
-                    calcInput = "ERROR";
-                    operations.clear();
-                }
-
             }
-            else
-            {
-                calcInput = "ERROR";
-                operations.clear();
-            }
+        }
+        catch(Exception e)
+        {
+            calcInput = "ERROR";
+            operations.clear();
         }
 
         if(operations.size() == 1)
         {
-            calcInput = operations.get(0);
+            if(operations.get(0).equals("Infinity")
+            || operations.get(0).equals("-Infinity")
+            || operations.get(0).equals("NaN"))
+            {
+                calcInput = "ERROR";
+            }
+
+            if(!needsClear)
+            {
+                NumberFormat format = NumberFormat.getInstance();
+                format.setMaximumFractionDigits(10);
+                calcInput = "" + format.format(Double.parseDouble(operations.get(0)));
+            }
+
         }
 
 
     }
 
 
+    void snoopMode()
+    {
 
+        mode = "Snoop";
+        snoopPlayer.start();
+
+        topLayout.setBackgroundResource(R.color.White);
+
+        buttonRotation = 0;
+
+        for(int i = 0; i < buttons.length; i++)
+        {
+            int color = Color.argb(255,(int)(Math.random() * 150),255,(int)(Math.random() * 150));
+            buttons[i].setBackgroundColor(color);
+            buttons[i].setText(originalButtonText[i]);
+        }
+
+        calcInputView.setBackgroundColor(Color.WHITE);
+
+        action.setBackgroundColor(Color.GREEN);
+
+        toolBarText.setText("Smoke the devil's lettuce");
+
+    }
+
+    void devilMode()
+    {
+
+        mode = "Devil";
+
+        topLayout.setBackgroundResource(R.color.White);
+
+        buttonRotation = 180;
+
+        for(int i = 0; i < buttons.length; i++)
+        {
+            int color = Color.argb(255,255,(int)(Math.random() * 100),(int)(Math.random() * 100));
+            buttons[i].setBackgroundColor(color);
+            buttons[i].setText(originalButtonText[i]);
+        }
+
+        calcInputView.setBackgroundColor(Color.argb(150, 255, 0, 0));
+
+        action.setBackgroundColor(Color.RED);
+
+        toolBarText.setText("THE DEVIL IS WATCHING");
+
+    }
+
+    void boobies()
+    {
+        mode = "Boobies";
+
+        topLayout.setBackgroundResource(R.color.White);
+
+        buttonRotation = 0;
+
+        for(int i = 0; i < buttons.length; i++)
+        {
+            int color = Color.argb(255,210,180,140);
+            buttons[i].setBackgroundColor(color);
+            buttons[i].setText("(.)");
+        }
+
+        calcInputView.setBackgroundColor(Color.WHITE);
+
+        action.setBackgroundColor(Color.argb(255,210,180,140));
+
+        toolBarText.setText("Nice ;)");
+
+    }
+
+    void sexy()
+    {
+        mode = "Sexy";
+
+        topLayout.setBackgroundResource(R.mipmap.ryan_raynolds);
+
+        buttonRotation = 0;
+
+        for(int i = 0; i < buttons.length; i++)
+        {
+            int color = Color.argb(100,0,0,0);
+            buttons[i].setBackgroundColor(color);
+            buttons[i].setText(originalButtonText[i]);
+        }
+
+        calcInputView.setBackgroundColor(Color.argb(0,0,0,0));
+
+        action.setBackgroundColor(Color.argb(0,0,0,0));
+
+        toolBarText.setText("");
+
+    }
 
 }
