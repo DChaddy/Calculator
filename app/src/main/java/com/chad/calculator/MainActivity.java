@@ -380,6 +380,11 @@ public class MainActivity extends AppCompatActivity {
         String temp = "";
         for(int i = 0; i < calcInput.length(); i++)
         {
+            if(calcInput.length() == 1)
+            {
+                break;
+            }
+
             if(calcInput.charAt(i) == '+'
             || calcInput.charAt(i) == '*'
             || calcInput.charAt(i) == '/') {
@@ -413,14 +418,22 @@ public class MainActivity extends AppCompatActivity {
                 operations.add(temp);
             }
 
+        }
 
-
+        for(int i = 0; i < calcInput.length() - 1; i++)
+        {
+            if(calcInput.charAt(i) == calcInput.charAt(i + 1))
+            {
+                calcInput = "ERROR";
+                operations.clear();
+            }
         }
 
         try
         {
             while(operations.size() > 1)
             {
+
                 if(operations.get(1).equals("+"))
                 {
                     operations.set(0, "" + (Double.parseDouble(operations.get(0)) + Double.parseDouble(operations.get(2))));
