@@ -117,13 +117,17 @@ public class MainActivity extends AppCompatActivity {
                                 {
                                     devilMode();
                                 }
-                                else if(calcInput.equals("5138008") && !mode.equals("Boobies"))
+                                else if(calcInput.equals("5318008") && !mode.equals("Boobies"))
                                 {
                                     boobies();
                                 }
                                 else if(calcInput.equals("69") && !mode.equals("Sexy"))
                                 {
                                     sexy();
+                                }
+                                else if(calcInput.equals("911") && !mode.equals("911"))
+                                {
+                                    thepopo();
                                 }
                             }
                         });
@@ -192,6 +196,31 @@ public class MainActivity extends AppCompatActivity {
                                         }
                                     }
 
+                                }
+                                else if(mode.equals("911"))
+                                {
+                                    for(int i = 0; i < buttons.length; i++)
+                                    {
+                                        int color;
+                                        if((int)(Math.random() * 2) == 0)
+                                        {
+                                            color = Color.argb(255,255,0,0);
+                                        }
+                                        else
+                                        {
+                                            color = Color.argb(255,0,0,255);
+                                        }
+
+                                        if((int)(Math.random() * 2) == 0)
+                                        {
+                                            calcInputView.setBackgroundColor(color);
+                                        }
+                                        else
+                                        {
+                                            action.setBackgroundColor(color);
+                                        }
+                                        buttons[i].setBackgroundColor(color);
+                                    }
                                 }
                             }
                         });
@@ -422,7 +451,7 @@ public class MainActivity extends AppCompatActivity {
 
         for(int i = 0; i < calcInput.length() - 1; i++)
         {
-            if(calcInput.charAt(i) == calcInput.charAt(i + 1))
+            if(calcInput.charAt(i) == '.' && calcInput.charAt(i + 1) == '.')
             {
                 calcInput = "ERROR";
                 operations.clear();
@@ -574,6 +603,38 @@ public class MainActivity extends AppCompatActivity {
         action.setBackgroundColor(Color.argb(0,0,0,0));
 
         toolBarText.setText("");
+
+    }
+
+    void thepopo()
+    {
+        mode = "911";
+
+        topLayout.setBackgroundResource(R.color.White);
+
+        buttonRotation = 0;
+
+        for(int i = 0; i < buttons.length; i++)
+        {
+            int color;
+            if((int)(Math.random() * 2) == 0)
+            {
+                color = Color.argb(255,255,0,0);
+            }
+            else
+            {
+                color = Color.argb(255,0,0,255);
+            }
+
+            buttons[i].setBackgroundColor(color);
+            buttons[i].setText(originalButtonText[i]);
+        }
+
+        calcInputView.setBackgroundColor(Color.WHITE);
+
+        action.setBackgroundColor(Color.argb(255,255,0,0));
+
+        toolBarText.setText("FBI OPEN UP");
 
     }
 
